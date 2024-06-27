@@ -67,7 +67,10 @@ model Attribute {
 model GameAttribute {
   id         Int         @id @default(autoincrement())
   name       String      @unique
+  shortname  String      @unique
+  default    Boolean
   attributes Attribute[]
+  skills     GameSkill[]
 }
 
 model Skill {
@@ -81,7 +84,19 @@ model Skill {
 }
 
 model GameSkill {
-  id    Int     @id @default(autoincrement())
-  name  String  @unique
-  skill Skill[]
+  id               Int             @id @default(autoincrement())
+  name             String          @unique
+  gameAttribute    GameAttribute   @relation(fields: [attributeId], references: [id])
+  attributeId      Int
+  default          Boolean         @default(true)
+  skills           Skill[]
+  GameSkillGroup   GameSkillGroup? @relation(fields: [gameSkillGroupId], references: [id])
+  gameSkillGroupId Int?
+}
+
+model GameSkillGroup {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  description String?
+  gameSkills  GameSkill[]
 }

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Body",
+    "shortname": "BOD",
+    "default": true
+  },
+  {
+    "name": "Agility",
+    "shortname": "AGI",
+    "default": true
+  },
+  {
+    "name": "Reaction",
+    "shortname": "REA",
+    "default": true
+  },
+  {
+    "name": "Strength",
+    "shortname": "STR",
+    "default": true
+  },
+  {
+    "name": "Willpower",
+    "shortname": "WIL",
+    "default": true
+  },
+  {
+    "name": "Logic",
+    "shortname": "LOG",
+    "default": true
+  },
+  {
+    "name": "Intuition",
+    "shortname": "INT",
+    "default": true
+  },
+  {
+    "name": "Charisma",
+    "shortname": "CHA",
+    "default": true
+  },
+  {
+    "name": "Edge",
+    "shortname": "EDG",
+    "default": true
+  },
+  {
+    "name": "Essence",
+    "shortname": "ESS",
+    "default": true
+  },
+  {
+    "name": "Magic",
+    "shortname": "MAG",
+    "default": false
+  },
+  {
+    "name": "Resonance",
+    "shortname": "RES",
+    "default": false
+  }
+]

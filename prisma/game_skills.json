@@ -1,0 +1,170 @@
+[
+  {
+    "name": "Archery",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Automatics",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Firearms"
+  },
+  {
+    "name": "Blades",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Close Combat"
+  },
+  {
+    "name": "Clubs",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Close Combat"
+  },
+  {
+    "name": "Escape Artist",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Exotic Melee Weapon",
+    "default": false,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Exotic Ranged Weapon",
+    "default": false,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Gunnery",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Gymnastics",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Athletics"
+  },
+  {
+    "name": "Heavy Weapons",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Locksmith",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Longarms",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Firearms"
+  },
+  {
+    "name": "Palming",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Stealth"
+  },
+  {
+    "name": "Pistols",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Firearms"
+  },
+  {
+    "name": "Sneaking",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Stealth"
+  },
+  {
+    "name": "Throwing Weapons",
+    "default": true,
+    "attribute": "Agility",
+    "group": null
+  },
+  {
+    "name": "Unarmed Combat",
+    "default": true,
+    "attribute": "Agility",
+    "group": "Close Combat"
+  },
+  {
+    "name": "Diving",
+    "default": true,
+    "attribute": "Body",
+    "group": null
+  },
+  {
+    "name": "Free-Fall",
+    "default": true,
+    "attribute": "Body",
+    "group": null
+  },
+  {
+    "name": "Pilot Aerospace",
+    "default": false,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Pilot Aircraft",
+    "default": false,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Pilot Exotic Vehicle",
+    "default": false,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Pilot Ground Craft",
+    "default": true,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Pilot Walker",
+    "default": false,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Pilot Watercraft",
+    "default": false,
+    "attribute": "Reaction",
+    "group": null
+  },
+  {
+    "name": "Running",
+    "default": true,
+    "attribute": "Strength",
+    "group": "Athletics"
+  },
+  {
+    "name": "Swimming",
+    "default": true,
+    "attribute": "Strength",
+    "group": "Athletics"
+  },
+  {
+    "name": "Animal Handling",
+    "default": true,
+    "attribute": "Charisma",
+    "group": null
+  }
+]
