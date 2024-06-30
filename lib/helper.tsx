@@ -1,5 +1,6 @@
 import React from 'react';
-import { PrismaClient } from '@prisma/client';
+import { findSingleUser } from '@/actions/user-actions';
+import { verifyAuth } from './auth';
 
 interface OptionCardProps {
   title: string;
@@ -23,13 +24,18 @@ export const OptionCard: React.FC<OptionCardProps> = ({
   );
 };
 
-const prisma = new PrismaClient();
-
-export async function initDb() {
-  const entryCount = await prisma.group.count();
-  if (entryCount == 0) {
-    const createGroup = await prisma.group.createMany({
-      data: [{ name: 'Administrator' }, { name: 'User' }],
-    });
+export async function currentUser() {
+  var currentUser;
+  const result = await verifyAuth();
+  if (result.user) {
+    currentUser = await findSingleUser(result.user.id);
   }
+  return currentUser;
 }
+
+export const renderError = (error: unknown): { message: string } => {
+  console.log(error);
+  return {
+    message: error instanceof Error ? error.message : 'an error occurred',
+  };
+};

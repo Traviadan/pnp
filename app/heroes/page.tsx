@@ -1,7 +1,13 @@
 import { redirect } from 'next/navigation';
 import { verifyAuth } from '@/lib/auth';
 
-export default async function HeroesPage() {
+export default async function HeroesPage({
+  searchParams,
+}:{
+  searchParams:{layout?: string; search?: string };
+}) {
+  const layout = searchParams.layout || 'grid';
+  const search = searchParams.search || '';
   const result = await verifyAuth();
 
   if (!result.user) {

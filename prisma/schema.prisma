@@ -25,6 +25,7 @@ model User {
   UsersOnGroups UsersOnGroups[]
   sessions      Session[]
   characters    Character[]
+  favorite      Favorite[]
 }
 
 model Group {
@@ -44,6 +45,16 @@ model UsersOnGroups {
   @@id([userId, groupId])
 }
 
+model Favorite {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Character {
   id         Int         @id @default(autoincrement())
   name       String      @unique
@@ -52,6 +63,7 @@ model Character {
   createdAt  DateTime    @default(now())
   attributes Attribute[]
   skills     Skill[]
+  favorite   Favorite[]
 }
 
 model Attribute {
