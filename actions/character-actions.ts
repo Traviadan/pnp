@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/db';
+import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { currentUser, renderError } from '@/lib/helper';
 import { 
@@ -9,7 +9,7 @@ import {
  } from '@/lib/schemas';
 
 export const fetchAllCharacters = ({ search = '' }: { search: string }) => {
-  return prisma.character.findMany({
+  return db.character.findMany({
     where: {
       name: { contains: search }
     },
@@ -20,7 +20,7 @@ export const fetchAllCharacters = ({ search = '' }: { search: string }) => {
 };
 
 export const fetchSingleCharacter = async (characterId: number) => {
-  const character = await prisma.character.findUnique({
+  const character = await db.character.findUnique({
     where: {
       id: characterId,
     },
@@ -41,7 +41,7 @@ export const createCharacterAction = async (
       const rawData = Object.fromEntries(formData);
       const validatedFields = validateWithZodSchema(characterSchema, rawData);
   
-      await prisma.character.create({
+      await db.character.create({
         data: {
           ...validatedFields,
           userId: user.id,

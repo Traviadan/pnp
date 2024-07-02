@@ -1,5 +1,5 @@
 import { GameAttribute, GameSkillGroup, Prisma, PrismaClient } from '@prisma/client'
-import hashUserPassword from '../lib/hash';
+import { hashUserPassword } from '../lib/hash';
 import characters from './characters.json';
 import game_attributes from './game_attributes.json';
 import game_skills from './game_skills.json'
@@ -23,7 +23,7 @@ const createGameSkill = (
         create: {
           name: attributeName,
           shortname: attributeShort,
-          default: attributeDefault
+          isdefault: attributeDefault
         }
       }
     }
@@ -107,6 +107,7 @@ async function main() {
             },
             create: {
               name: "Admin",
+              email: "thorsten@eggers-bhv.de",
               password: hashUserPassword("password")
             }
           }

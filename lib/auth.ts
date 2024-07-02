@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { Lucia } from 'lucia';
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 
 const client = new PrismaClient();
 const adapter = new PrismaAdapter(client.session, client.user);
@@ -15,8 +15,8 @@ const lucia = new Lucia(adapter, {
   },
 });
 
-export async function createAuthSession(user) {
-  const session = await lucia.createSession(user.name, {});
+export async function createAuthSession(user: User) {
+  const session = await lucia.createSession(user.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
     sessionCookie.name,
@@ -84,4 +84,11 @@ export async function destroySession() {
     sessionCookie.value,
     sessionCookie.attributes,
   );
+}
+
+declare module "lucia" {
+	interface Register {
+		Lucia: typeof lucia;
+		UserId: number;
+	}
 }

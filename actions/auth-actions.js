@@ -2,7 +2,7 @@
 import { redirect } from 'next/navigation';
 
 import { hashUserPassword, verifyPassword } from '@/lib/hash';
-import { createUser, getUserByEmail } from '@/lib/user';
+import { createUser, getUserByEmail } from '@/actions/user-actions';
 import { createAuthSession, destroySession } from '@/lib/auth';
 
 export async function signup(prevState, formData) {

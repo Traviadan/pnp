@@ -1,6 +1,7 @@
 import React from 'react';
 import { findSingleUser } from '@/actions/user-actions';
 import { verifyAuth } from './auth';
+import { redirect } from 'next/navigation';
 
 interface OptionCardProps {
   title: string;
@@ -32,6 +33,21 @@ export async function currentUser() {
   }
   return currentUser;
 }
+
+export const getAdminUser = async () => {
+  let isAdmin = false;
+  const user = await currentUser();
+  if (user && user.groups && user.groups.length > 0) {
+    user.groups.forEach((element) => {
+      if (element.name == "Administrator") {
+        isAdmin = true;
+        return;
+      }
+    });
+  };
+  if (!isAdmin) redirect('/');
+  return user;
+};
 
 export const renderError = (error: unknown): { message: string } => {
   console.log(error);

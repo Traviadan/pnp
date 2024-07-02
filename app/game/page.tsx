@@ -19,7 +19,7 @@ export default async function HeroesPage() {
       <OptionCard
         title="Attribute"
         description="Attribute bearbeiten"
-        href="/game/attribute"
+        href="/game/attributes"
       />
       </div>
     </div>
