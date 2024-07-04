@@ -8,14 +8,14 @@ import {
 import { LuAlignLeft } from 'react-icons/lu';
 import Link from 'next/link';
 import { Button } from '../ui/button';
-import { links } from '@/utils/links';
+import { publicLinks, privateLinks, adminLinks } from '@/lib/links';
+import { isAuthenticated, isAdminUser } from "@/lib/helper";
 import UserIcon from './UserIcon';
-import { SignInButton, SignedIn, SignedOut, SignUpButton } from '@clerk/nextjs';
-import SignOutLink from './SignOutLink';
-import { auth } from '@clerk/nextjs/server';
-function LinksDropdown() {
-  const { userId } = auth();
-  const isAdmin = userId === process.env.ADMIN_USER_ID;
+import { AuthButton } from './AuthButton';
+
+async function LinksDropdown() {
+  const isAuth = await isAuthenticated();
+  const isAdmin = await isAdminUser();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,35 +25,40 @@ function LinksDropdown() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-40' align='start' sideOffset={10}>
-        <SignedOut>
-          <DropdownMenuItem>
-            <SignInButton mode='modal'>
-              <button className='w-full text-left'>Login</button>
-            </SignInButton>
+      {publicLinks.map((link) => {
+        const { href, label } = link;
+        return (
+          <DropdownMenuItem key={href}>
+          <Link href={href} className='capitalize w-full'>
+            {label}
+          </Link>
+        </DropdownMenuItem>
+        );
+      })}
+      {privateLinks.map((link) => {
+        const { href, label } = link;
+        if (!isAuth) return null;
+        return (
+          <DropdownMenuItem key={href}>
+          <Link href={href} className='capitalize w-full'>
+            {label}
+          </Link>
+        </DropdownMenuItem>
+        );
+      })}
+      {adminLinks.map((link) => {
+        const { href, label } = link;
+        if (!isAdmin) return null;
+        return (
+          <DropdownMenuItem key={href}>
+            <Link href={href} className='capitalize w-full'>
+              {label}
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <SignUpButton mode='modal'>
-              <button className='w-full text-left'>Register</button>
-            </SignUpButton>
-          </DropdownMenuItem>
-        </SignedOut>
-        <SignedIn>
-          {links.map((link) => {
-            if (link.label === 'dashboard' && !isAdmin) return null;
-            return (
-              <DropdownMenuItem key={link.href}>
-                <Link href={link.href} className='capitalize w-full'>
-                  {link.label}
-                </Link>
-              </DropdownMenuItem>
-            );
-          })}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <SignOutLink />
-          </DropdownMenuItem>
-        </SignedIn>
+          );
+      })}
+        <DropdownMenuSeparator />
+        <AuthButton />
       </DropdownMenuContent>
     </DropdownMenu>
   );

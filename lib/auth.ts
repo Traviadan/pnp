@@ -1,10 +1,11 @@
 import { cookies } from 'next/headers';
 import { Lucia } from 'lucia';
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma';
-import { PrismaClient, User } from '@prisma/client';
+import db from '@/lib/db';
+import { User } from '@prisma/client';
 
-const client = new PrismaClient();
-const adapter = new PrismaAdapter(client.session, client.user);
+//const client = new PrismaClient();
+const adapter = new PrismaAdapter(db.session, db.user);
 
 const lucia = new Lucia(adapter, {
   sessionCookie: {

@@ -25,6 +25,28 @@ export const OptionCard: React.FC<OptionCardProps> = ({
   );
 };
 
+export async function isAdminUser(): Promise<boolean> {
+  let isAdmin = false;
+  const user = await currentUser();
+  if (user && user.groups && user.groups.length > 0) {
+    user.groups.forEach((element) => {
+      if (element.name == "Administrator") {
+        isAdmin = true;
+        return;
+      }
+    });
+  };
+  return isAdmin;
+}
+
+export async function isAuthenticated(): Promise<boolean> {
+  const user = await currentUser();
+  if (user) {
+    return true;
+  }
+  return false;
+}
+
 export async function currentUser() {
   var currentUser;
   const result = await verifyAuth();

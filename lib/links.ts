@@ -3,9 +3,12 @@ type NavLink = {
   label: string;
 };
 
-export const links: NavLink[] = [
+export const publicLinks: NavLink[] = [
   { href: '/', label: 'home' },
   { href: '/about', label: 'about' },
+];
+
+export const privateLinks: NavLink[] = [
   { href: '/heroes', label: 'characters' },
   { href: '/admin/dashboard', label: 'dashboard' },
 ];

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { verifyAuth } from '@/lib/auth';
-import { logout } from '@/actions/auth-actions';
-
+import Navbar from "@/components/navbar/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,19 +21,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-      {auth && auth.user ? (
-      <header id="auth-header">
-        <form action={logout}>
-          <button>Logout</button>
-        </form>
-      </header>
-      ) :
-      (
-      <header id="auth-header">
-        <p>Login first!</p>
-      </header>
-      )}
-        {children}</body>
+        <Navbar />
+        {children}
+      </body>
     </html>
   );
 }
