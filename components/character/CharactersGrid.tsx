@@ -1,13 +1,27 @@
-import { Character } from '@prisma/client';
+import { type Character, FavoriteWithoutUser } from '@/lib/schemas';
 import Link from 'next/link';
 import { Card, CardContent } from '../ui/card';
-import Image from 'next/image';
 import FavoriteToggleButton from './FavoriteToggleButton';
 
-export function CharactersGrid({ characters }: { characters: Character[] }) {
+type GridParameter = {
+  characters?: Character[],
+  favorites?: FavoriteWithoutUser[],
+}
+
+export function CharactersGrid({ params }: { params: GridParameter }) {
+  const { characters, favorites} = params;
+  let characterArray = Array();
+  if (favorites) {
+    favorites.map((row) => {
+      characterArray.push(row.character)
+    })
+  } else {
+    characterArray = Array(characters);
+  }
+
   return (
     <div className='pt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
-      {characters.map((character) => {
+      {characterArray.map((character) => {
         const { name } = character;
         const characterId = character.id;
 

@@ -1,8 +1,8 @@
 import { LuUser2 } from 'react-icons/lu';
-import { currentUser } from '@/lib/helper';
+//import { currentUser } from '@/lib/helper';
 
-async function UserIcon() {
-  const user = await currentUser();
+function UserIcon() {
+  //const user = await currentUser();
 
   /*
   const profileImage = user?.imageUrl;

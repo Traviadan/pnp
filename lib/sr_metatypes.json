@@ -1,0 +1,282 @@
+{
+  "human":
+  {
+    "attribute":
+      {
+        "body":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "Agility":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "reaction":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "strength":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "willpower":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "logic":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "intuition":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "charisma":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "edge":
+        {
+          "value": 2,
+          "maxValue": 7
+        },
+        "essence":
+        {
+          "value": 6,
+          "maxValue": 6
+        }
+    }
+  },
+  "elf":
+  {
+    "attribute":
+      {
+        "body":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "Agility":
+        {
+          "value": 2,
+          "maxValue": 7
+        },
+        "reaction":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "strength":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "willpower":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "logic":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "intuition":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "charisma":
+        {
+          "value": 3,
+          "maxValue": 8
+        },
+        "edge":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "essence":
+        {
+          "value": 6,
+          "maxValue": 6
+        }
+    }
+  },
+  "dwarf":
+  {
+    "attribute":
+      {
+        "body":
+        {
+          "value": 3,
+          "maxValue": 8
+        },
+        "Agility":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "reaction":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "strength":
+        {
+          "value": 3,
+          "maxValue": 8
+        },
+        "willpower":
+        {
+          "value": 2,
+          "maxValue": 7
+        },
+        "logic":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "intuition":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "charisma":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "edge":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "essence":
+        {
+          "value": 6,
+          "maxValue": 6
+        }
+    }
+  },
+  "ork":
+  {
+    "attribute":
+      {
+        "body":
+        {
+          "value": 4,
+          "maxValue": 9
+        },
+        "Agility":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "reaction":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "strength":
+        {
+          "value": 3,
+          "maxValue": 8
+        },
+        "willpower":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "logic":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "intuition":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "charisma":
+        {
+          "value": 1,
+          "maxValue": 4
+        },
+        "edge":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "essence":
+        {
+          "value": 6,
+          "maxValue": 6
+        }
+    }
+  },
+  "troll":
+  {
+    "attribute":
+      {
+        "body":
+        {
+          "value": 5,
+          "maxValue": 10
+        },
+        "Agility":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "reaction":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "strength":
+        {
+          "value": 5,
+          "maxValue": 10
+        },
+        "willpower":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "logic":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "intuition":
+        {
+          "value": 1,
+          "maxValue": 5
+        },
+        "charisma":
+        {
+          "value": 1,
+          "maxValue": 4
+        },
+        "edge":
+        {
+          "value": 1,
+          "maxValue": 6
+        },
+        "essence":
+        {
+          "value": 6,
+          "maxValue": 6
+        }
+    }
+  }
+}

@@ -2,31 +2,32 @@
 
 import db from '@/lib/db';
 import { redirect } from 'next/navigation';
-import { currentUser, getAdminUser, renderError } from '@/lib/helper';
+import { getAdminUser, renderError } from '@/lib/helper';
 import { 
-  gameAttributeSchema,
+  GameAttribute,
   validateWithZodSchema
- } from '@/lib/schemas';
+} from '@/lib/schemas';
+import { revalidatePath } from 'next/cache';
 
 export const fetchAllGameAttributes = ({ search = '' }: { search: string }) => {
   return db.gameAttribute.findMany({
     where: {
-      name: { contains: search }
+      id: { contains: search }
     },
     orderBy: {
-      name: 'asc',
+      id: 'asc',
     },
   });
 };
 
-export const fetchGameAttributeDetails = async (attributeId: number) => {
+export const fetchGameAttributeDetails = async (attributeId: string) => {
   await getAdminUser();
   const attribute = await db.gameAttribute.findUnique({
     where: {
       id: attributeId,
     },
   });
-  if (!attribute) redirect('/game/attributes');
+  if (!attribute) redirect('/admin/attributes');
   return attribute;
 };
 
@@ -36,19 +37,21 @@ export const updateGameAttributeAction = async (
 ) => {
   await getAdminUser();
   try {
-    const attributeId = parseInt(formData.get('id') as string);
+    const isDefault = formData.get('isdefault') ? true : false;
     const rawData = Object.fromEntries(formData);
-    const validatedFields = validateWithZodSchema(gameAttributeSchema, rawData);
+    const validatedFields = validateWithZodSchema(GameAttribute, rawData);
 
     await db.gameAttribute.update({
       where: {
-        id: attributeId,
+        id: validatedFields.id,
       },
       data: {
         ...validatedFields,
+        isDefault: isDefault
       },
     });
-    return { message: 'Product updated successfully' };
+    revalidatePath(`/admin/attributes`);
+    return { message: 'Attribute updated successfully' };
   } catch (error) {
     return renderError(error);
   }

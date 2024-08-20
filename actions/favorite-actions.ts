@@ -1,12 +1,12 @@
 'use server';
 
-import { prisma } from '@/lib/db';
+import db from '@/lib/db';
 import { currentUser, renderError } from '@/lib/helper';
 
 export const fetchFavoriteId = async ({ characterId }: { characterId: number }) => {
   const user = await currentUser();
   if (user) {
-    const favorite = await prisma.favorite.findFirst({
+    const favorite = await db.favorite.findFirst({
       where: {
         characterId: characterId,
         userId: user.id,
@@ -30,13 +30,13 @@ export const toggleFavoriteAction = async (prevState: {
 
     try {
       if (favoriteId) {
-        await prisma.favorite.delete({
+        await db.favorite.delete({
           where: {
             id: favoriteId,
           },
         });
       } else {
-        await prisma.favorite.create({
+        await db.favorite.create({
           data: {
             characterId: characterId,
             userId: user.id,
@@ -54,12 +54,19 @@ export const toggleFavoriteAction = async (prevState: {
 export const fetchUserFavorites = async () => {
   const user = await currentUser();
   if (user) {
-    const favorites = await prisma.favorite.findMany({
+    const favorites = await db.favorite.findMany({
       where: {
         userId: user.id,
       },
       include: {
-        character: true,
+        character: {
+          include: {
+            metatype: true,
+            attributes: true,
+            skills: true,
+            notes: true,
+          }
+        },
       },
     });
     return favorites;

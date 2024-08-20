@@ -1,105 +1,203 @@
-import { GameAttribute, GameSkillGroup, Prisma, PrismaClient } from '@prisma/client'
+import { Prisma, PrismaClient } from '@prisma/client'
 import { hashUserPassword } from '../lib/hash';
 import characters from './characters.json';
 import game_attributes from './game_attributes.json';
 import game_skills from './game_skills.json'
 import game_skill_groups from './game_skill_groups.json';
+import { z } from 'zod';
+import {
+  Character, CharacterCreate,
+  Metatype, MetatypeCreate,
+  jsonGameSkill,
+  GameSkill,
+  GameSkillGroup,
+  idSchema,
+  validateWithZodSchema,
+  Attribute, 
+  GameAttribute,
+} from '@/lib/schemas';
 
 const prisma = new PrismaClient()
 
-const createGameSkill = (
-  skillName: string,
-  attributeName: string,
-  attributeShort: string,
-  attributeDefault: boolean
+const connectGameAttribute = (
+  name: string,
 ) => {
-  return Prisma.validator<Prisma.GameSkillCreateInput>()({
-    name: skillName,
-    gameAttribute: {
-      connectOrCreate: {
-        where: {
-          name: attributeName
-            },
-        create: {
-          name: attributeName,
-          shortname: attributeShort,
-          isdefault: attributeDefault
-        }
-      }
+  return Prisma.validator<Prisma.GameAttributeCreateNestedOneWithoutSkillsInput>()({
+    connect: { name: name }
+  });
+}
+
+const connectOrCreateAttribute = (
+  attribute: z.infer<typeof Attribute>
+) => {
+  return Prisma.validator<Prisma.AttributeCreateOrConnectWithoutCharacterInput>()({
+    where: { name: attribute.name },
+    create: {
+      name: attribute.name,
+      value: attribute.value,
+      valueMax: attribute.valueMax,
+      gameAttribute: connectGameAttribute( attribute.name )
+    }
+  });
+}
+
+const createAttributeNestedMany = (
+  attributes: z.infer<typeof Attribute>[]
+) => {
+  return Prisma.validator<Prisma.AttributeCreateNestedManyWithoutCharacterInput>() ({
+      connectOrCreate: attributes.map( (entry) => { return connectOrCreateAttribute(entry)} )
+  });
+}
+
+const fetchGameAttributeId = async (attributeName: string) => {
+  return prisma.gameAttribute.findFirst({
+    where: {
+      name: attributeName
+    },
+    select: {
+      id: true
     }
   })
 }
 
-const createManyGameSkill = (
-  skillName: string,
-  attributeId: number,
-  skillGroupId: number
+const createUser = (
+  name: string,
+  password: string,
+  email?: string,
 ) => {
-  let newData = null;
-  if (skillGroupId < 0) {
-    newData = {
-      name: skillName,
-      attributeId: attributeId
-    };
-  } else {
-    newData = {
-      name: skillName,
-      attributeId: attributeId,
-      gameSkillGroupId: skillGroupId
-    };
-  }
-  return Prisma.validator<Prisma.GameSkillCreateManyInput>()(newData)
+  return Prisma.validator<Prisma.UserCreateInput>()({
+    name,
+    email,
+    password
+  })
+}
+
+const createAttribute = (
+  name: string,
+  value: number,
+  valueMax: number,
+  character: z.infer<typeof Character>,
+  gameAttribute: z.infer<typeof GameAttribute>,
+) => {
+  return Prisma.validator<Prisma.AttributeCreateInput>()({
+    name,
+    value,
+    valueMax,
+    character: {connectOrCreate: {
+      where: { id: character.id },
+      create: {
+        name: character.name,
+        metatype: { connectOrCreate: {where: {name: character.metatype.name}, create: { name: character.metatype.name}}},
+        user: {
+          connectOrCreate: {
+            where: {id: character.user.id},
+            create: createUser(character.user.name, character.user.password)}
+          },
+        finished: character.finished
+      }
+    }},
+    gameAttribute: { connectOrCreate: {
+      where: { name: gameAttribute.name },
+      create: { name: gameAttribute.name, shortname: gameAttribute.shortname, isDefault: gameAttribute.isdefault }
+    }},
+  })
+}
+
+const createNestedAttributes = (
+  name: string,
+  value: number,
+  valueMax: number,
+  gameAttribute: Prisma.GameAttributeCreateNestedOneWithoutAttributesInput,
+) => {
+  return Prisma.validator<Prisma.AttributeCreateNestedManyWithoutCharacterInput>()({
+
+  })
+}
+
+const createCharacter = (
+  name: string,
+  metatype: Prisma.MetatypeCreateInput,
+  user: Prisma.UserCreateInput,
+  finished: boolean,
+  notes: Prisma.CharacterNoteCreateNestedManyWithoutCharacterInput,
+  attributes: Prisma.AttributeCreateNestedManyWithoutCharacterInput,
+  skills: Prisma.SkillCreateNestedManyWithoutCharacterInput,
+  favorite: Prisma.FavoriteCreateNestedManyWithoutCharacterInput,
+) => {
+  return Prisma.validator<Prisma.CharacterCreateInput>()({
+    name,
+    finished,
+  })
 }
 
 async function main() {
+  /*
   var dbAttributes = [];
   for (const item of game_attributes) {
-    const createGameAttribute: Prisma.GameAttributeCreateInput = item;
+    const createGameAttribute = validateWithZodSchema(GameAttribute, item);
     let result = await prisma.gameAttribute.create({
       data: createGameAttribute
     })
     dbAttributes[result.id] = result;
   }
+
   var dbSkillGroups = [];
   for (const item of game_skill_groups) {
-    const createGameSkillGroup: Prisma.GameSkillGroupCreateInput = item;
+    const createGameSkillGroup = validateWithZodSchema(GameSkillGroup, item);
     let result = await prisma.gameSkillGroup.create({
       data: createGameSkillGroup
     })
     dbSkillGroups[result.id] = result;
   }
 
-  let createSkills = [];
+  let gameSkills: z.infer<typeof GameSkill>[] = [];
   for (const item of game_skills) {
-    let attributeId = -1;
-    let groupId = -1;
+    const jGameSkill = validateWithZodSchema(jsonGameSkill, item);
     if (item.group && item.group != "") {
       dbSkillGroups.forEach((element) => {
         if (element.name == item.group) {
-          groupId = element.id;
+          jGameSkill.groupId = element.id;
           return;
         }
       })
     }
     dbAttributes.forEach((element) => {
       if (element.name == item.attribute) {
-        attributeId = element.id;
+        jGameSkill.attributeId = element.id;
         return;
       }
     })
-    if (attributeId > 0) {
-      createSkills.push(createManyGameSkill(item.name, attributeId, groupId));
-    }
+    gameSkills.push(validateWithZodSchema(GameSkill, jGameSkill));
   }
-  let result = await prisma.gameSkill.createMany({
-    data: createSkills
+
+  await prisma.gameSkill.createMany({
+    data: [
+      { name: 'Hallo', default: true, attributeId: 1 },
+    ]
   });
+  */
 
   for (const item of characters) {
-    const createCharacter: Prisma.CharacterCreateWithoutUserInput = item;
-    let newCharacter = await prisma.character.create({
+    const valCharacterFields = validateWithZodSchema( CharacterCreate, item );
+    let characterAttributes = Array();
+    item.attributes.map(async (entry) => {
+      const gaId = await fetchGameAttributeId(entry.name);
+      characterAttributes.push(validateWithZodSchema(Attribute, { attributeId: gaId, value: entry.value, valueMax: entry.valueMax}));
+    });
+
+    await prisma.character.create({
       data: {
-        name: item.name,
+        ...valCharacterFields,
+        metatype: {
+          create: {
+            ...validateWithZodSchema(MetatypeCreate, item.metatype)
+          }
+        },
+        attributes: {
+          createMany: {
+            data: characterAttributes
+          }
+        },
         user: {
           connectOrCreate: {
             where: {
@@ -108,7 +206,55 @@ async function main() {
             create: {
               name: "Admin",
               email: "thorsten@eggers-bhv.de",
-              password: hashUserPassword("password")
+              password: hashUserPassword("password"),
+              groups: {
+                connectOrCreate: {
+                  where: {
+                    name: "Administrator"
+                  },
+                  create: {
+                    name: "Administrator"
+                  }
+                }
+              }
+            }
+          }
+        },
+      },
+    });
+    let newCharacter = await prisma.character.create({
+      data: {
+        name: item.name,
+        finished: item.finished,
+        metatype: {
+          connectOrCreate: {
+            where: {
+              name: 'Human'
+            },
+            create: {
+              name: 'Human'
+            }
+          }
+        },
+        user: {
+          connectOrCreate: {
+            where: {
+              name: "Admin",
+            },
+            create: {
+              name: "Admin",
+              email: "thorsten@eggers-bhv.de",
+              password: hashUserPassword("password"),
+              groups: {
+                connectOrCreate: {
+                  where: {
+                    name: "Administrator"
+                  },
+                  create: {
+                    name: "Administrator"
+                  }
+                }
+              }
             }
           }
         },

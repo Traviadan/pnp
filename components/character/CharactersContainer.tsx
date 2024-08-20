@@ -6,7 +6,7 @@ import { Separator } from '../ui/separator';
 import { fetchAllCharacters } from '@/actions/character-actions';
 import Link from 'next/link';
 
-export async function ProductsContainer({
+export async function CharactersContainer({
   layout,
   search,
 }: {

@@ -1,23 +1,17 @@
-import AuthForm from '@/components/auth-form';
-import { verifyAuth } from '@/lib/auth';
-import { OptionCard } from '@/lib/helper';
-import { logout } from '@/actions/auth-actions';
 
+import LoadingContainer from "@/components/global/LoadingContainer";
+import Home from "@/components/home/Home";
+import { Suspense } from "react";
+import FavoriteCharacters from "@/components/home/FavoriteCharacters";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: { mode: string | undefined };
-}) {
-  const auth = await verifyAuth();
-
-  const formMode = searchParams.mode || 'login';
-
+export default function HomePage() {
   return (
-    <main>
-      <h1 className="text-4xl font-bold text-awi-blue mb-6">
-        Willkommen bei PnP-App
-      </h1>
-    </main>
+    <>
+      <Home />
+
+      <Suspense fallback={<LoadingContainer />}>
+        <FavoriteCharacters />
+      </Suspense>
+    </>
   );
 }

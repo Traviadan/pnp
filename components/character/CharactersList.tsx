@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Character } from '@prisma/client';
-import Image from 'next/image';
 import FavoriteToggleButton from './FavoriteToggleButton';
 
 export function CharactersList({ characters }: { characters: Character[] }) {

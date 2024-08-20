@@ -43,35 +43,58 @@ model Favorite {
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
   characterId Int
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime?  @updatedAt
+}
+
+model CharacterNote {
+  id          Int        @id @default(autoincrement())
+  noteText    String
+  Character   Character @relation(fields: [characterId], references: [id])
+  characterId Int
+}
+
+model GearNote {
+  id          Int       @id @default(autoincrement())
+  noteText    String
+  gear        Gear     @relation(fields: [gearId], references: [id])
+  gearId      Int
 }
 
 model Character {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
-  user       User        @relation(fields: [userId], references: [id])
-  userId     Int         @unique
-  createdAt  DateTime    @default(now())
-  attributes Attribute[]
-  skills     Skill[]
-  favorite   Favorite[]
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  metatype    Metatype    @relation(fields: [metatypeId], references: [id])
+  metatypeId  String
+  user        User        @relation(fields: [userId], references: [id])
+  userId      Int         @unique
+  createdAt   DateTime    @default(now())
+  finished    Boolean
+  notes       CharacterNote[]
+  attributes  Attribute[]
+  skills      Skill[]
+  favorite    Favorite[]
+}
+
+model Metatype {
+  id          String        @id
+  characters  Character[]
 }
 
 model Attribute {
-  id          Int           @id @default(autoincrement())
-  attribute   GameAttribute @relation(fields: [attributeId], references: [id])
-  attributeId Int           @unique
-  character   Character     @relation(fields: [characterId], references: [id])
-  characterId Int           @unique
-  value       Int
-  valueMax    Int
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+  value           Int
+  valueMax        Int
+  character       Character       @relation(fields: [characterId], references: [id])
+  characterId     Int             @unique
+  gameAttribute   GameAttribute @relation(fields: [gameAttributeId], references: [id])
+  gameAttributeId String         @unique
 }
 
 model GameAttribute {
-  id         Int         @id @default(autoincrement())
-  name       String      @unique
+  id         String      @id
   shortname  String      @unique
-  isdefault  Boolean
+  isDefault  Boolean
   attributes Attribute[]
   skills     GameSkill[]
 }
@@ -79,7 +102,7 @@ model GameAttribute {
 model Skill {
   id          Int       @id @default(autoincrement())
   skill       GameSkill @relation(fields: [skillId], references: [id])
-  skillId     Int       @unique
+  skillId     String    @unique
   character   Character @relation(fields: [characterId], references: [id])
   characterId Int       @unique
   value       Int
@@ -87,19 +110,37 @@ model Skill {
 }
 
 model GameSkill {
-  id               Int             @id @default(autoincrement())
-  name             String          @unique
+  id                String         @id
   gameAttribute    GameAttribute   @relation(fields: [attributeId], references: [id])
-  attributeId      Int
-  default          Boolean         @default(true)
-  skills           Skill[]
+  attributeId      String
+  isDefault        Boolean         @default(true)
   GameSkillGroup   GameSkillGroup? @relation(fields: [gameSkillGroupId], references: [id])
-  gameSkillGroupId Int?
+  gameSkillGroupId String?
+  skills           Skill[]
 }
 
 model GameSkillGroup {
-  id          Int         @id @default(autoincrement())
-  name        String      @unique
+  id          String      @id
   description String?
   gameSkills  GameSkill[]
+}
+
+model Gear {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  gameGear    GameGear  @relation(fields: [gameGearId], references: [id])
+  gameGearId  Int
+  notes       GearNote[]    
+}
+
+model GameGear {
+  id            Int         @id @default(autoincrement())
+  name          String      @unique
+  description   String      @unique
+  level         Int?
+  capacitiy     Int?
+  legal         Boolean
+  restricted    Boolean
+  availability  Int?
+  gears       Gear[]
 }

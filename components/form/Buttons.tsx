@@ -68,6 +68,60 @@ export const IconButton = ({ actionType }: { actionType: actionType }) => {
   );
 };
 
+export const SignInButton = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  return (
+    <Button
+      type='button'
+      size='icon'
+      variant='default'
+      className='w-full text-left'
+      asChild
+    >
+      {children}
+    </Button>
+    );
+};
+
+export const SignUpButton = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  return (
+    <Button
+      type='button'
+      size='default'
+      variant='outline'
+      className='w-full text-left'
+      asChild
+    >
+      {children}
+    </Button>
+    );
+};
+
+export const SignOutButton = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
+  return (
+    <Button
+      type='button'
+      size='default'
+      variant='default'
+      className='p-2 cursor-pointer'
+      asChild
+    >
+      {children}
+    </Button>
+    );
+};
+
 export const CardSignInButton = () => {
   return (
     <Button

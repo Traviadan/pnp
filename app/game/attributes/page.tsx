@@ -39,7 +39,7 @@ export default async function AttributesPage({
           <TableRow key={attribute.id}>
             <TableCell className="font-medium">{attribute.name}</TableCell>
             <TableCell>{attribute.shortname}</TableCell>
-            <TableCell className="text-right"><Checkbox id="terms" checked={attribute.isdefault} disabled /></TableCell>
+            <TableCell className="text-right"><Checkbox id="terms" checked={attribute.isDefault} disabled /></TableCell>
           </TableRow>
         ))}
       </TableBody>

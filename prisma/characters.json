@@ -1,5 +1,23 @@
 [
   {
-    "name": "John Doe"
+    "name": "John Doe",
+    "metatype": { "name": "Human" },
+    "finished": false,
+    "attributes": [
+      { "name": "Body", "value": 4, "valueMax": 6 },
+      { "name": "Agility", "value": 4, "valueMax": 6 },
+      { "name": "Reaction", "value": 4, "valueMax": 6 },
+      { "name": "Strength", "value": 4, "valueMax": 6 },
+      { "name": "Willpower", "value": 4, "valueMax": 6 },
+      { "name": "Logic", "value": 4, "valueMax": 6 },
+      { "name": "Intuition", "value": 4, "valueMax": 6 },
+      { "name": "Charisma", "value": 4, "valueMax": 6 },
+      { "name": "Edge", "value": 4, "valueMax": 6 },
+      { "name": "Essence", "value": 6, "valueMax": 6 }
+    ],
+    "skills": [
+      { "name": "Archery", "value": 0, "valueMax": 6 },
+      { "name": "Automatics", "value": 0, "valueMax": 6 }
+    ]
   }
 ]

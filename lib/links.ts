@@ -15,4 +15,5 @@ export const privateLinks: NavLink[] = [
 
 export const adminLinks: NavLink[] = [
   { href: '/admin/attributes', label: 'attributes' },
+  { href: '/admin/skills', label: 'skills' },
 ];

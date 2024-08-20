@@ -1,5 +1,10 @@
 import { redirect } from 'next/navigation';
-import { verifyAuth } from '@/lib/auth';
+import { LuLayoutGrid, LuList } from 'react-icons/lu';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { CharactersContainer } from '@/components/character/CharactersContainer';
+import { fetchAllCharacters } from '@/actions/character-actions';
 
 export default async function HeroesPage({
   searchParams,
@@ -8,18 +13,6 @@ export default async function HeroesPage({
 }) {
   const layout = searchParams.layout || 'grid';
   const search = searchParams.search || '';
-  const result = await verifyAuth();
-
-  if (!result.user) {
-    return redirect('/');
-  }
-
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-awi-blue mb-4">
-        Charaktere anzeigen
-      </h1>
-      <p>Hier können Sie alle erstellten Charaktere einsehen.</p>
-    </div>
-  );
+  
+  return <CharactersContainer layout={layout} search={search} />;
 }
