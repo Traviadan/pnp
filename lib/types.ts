@@ -1,6 +1,13 @@
+import { Dispatch, SetStateAction } from "react";
+
 export type actionFunction = (
   prevState: any,
   formData: FormData
+) => Promise<{ message: string }>;
+
+export type formActionFunction = (
+  prevState: any,
+  rawData: any
 ) => Promise<{ message: string }>;
 
 export type deleteFromListHandler = (
@@ -29,3 +36,5 @@ export type CartState = {
   tax: number;
   orderTotal: number;
 };
+
+export type CloseFunction = () => void;

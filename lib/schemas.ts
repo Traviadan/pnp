@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { z, ZodSchema } from 'zod';
+import { z, ZodNull, ZodSchema } from 'zod';
 
 export const Group = z.object( {
   id: z.number().int(),
@@ -17,7 +17,9 @@ export const User = z.object( {
 export type User = z.infer<typeof User>;
 export const UserCreate = User.pick({ name: true, email: true, password: true});
 export type UserCreate = z.infer<typeof UserCreate>;
-
+export const UserForm = User.default(
+  { id: 0, name: 'tbd', email: undefined, password: '12345678'}
+)
 export const Session = z.object( {
   id: z.string(),
   userId: z.number().int(),
@@ -29,59 +31,55 @@ export const Metatype = z.object( {
   id: z.string().min(1).max(100),
 } );
 export type Metatype = z.infer<typeof Metatype>;
+export const MetatypeForm = Metatype.default(
+  { id: 'tbd' }
+)
 
 export const Character = z.object({
-  id: z.coerce.number().int(),
+  id: z.number().int(),
   name: z.string().min(1).max(100),
   finished: z.coerce.boolean(),
-  metatype: Metatype,
   metatypeId: z.string(),
-  user: User,
+  user: User.nullish(),
   userId: z.coerce.number().int(),
-});
+
+})
 export type Character = z.infer<typeof Character>;
 
-export const GameAttribute = z.object({
-  id: z.string().min(2).max(20),
-  shortname: z.string().min(1).max(3),
-  isDefault: z.boolean(),
-});
+export const CharacterFormSchema = Character.default(
+  { id: 0,
+    name: 'John Doe',
+    finished: false,
+    metatypeId: '',
+    user: UserForm.parse(undefined),
+    userId: 0}
+)
+export type CharacterFormType = z.infer<typeof CharacterFormSchema>
 
 export const Attribute = z.object({
   id: z.number().int(),
   name: z.string().min(2).max(20),
   character: Character,
   characterId: z.number().int(),
-  gameAttribute: GameAttribute,
-  gameAttributeId: z.string(),
-  value: z.number().int(),
-  valueMax: z.number().int(),
+  value: z.coerce.number().int(),
+  valueMax: z.coerce.number().int(),
 });
+export type Attribute = z.infer<typeof Attribute>
 
-export const jsonGameSkill = z.object({
-  name: z.string().min(1).max(20),
-  attribute: z.string().min(1).max(20),
-  group: z.string().min(1).max(20).optional(),
-  attributeId: z.number().int(),
-  groupId: z.number().int().optional(),
-  default: z.boolean(),
-});
-
-export const GameSkill = z.object({
-  id: z.string().min(1).max(20),
-  attributeId: z.string(),
-  groupId: z.string().nullish(),
-  default: z.boolean(),
-});
-
-export const GameSkillGroup = z.object({
-  id: z.string().min(2).max(20),
-  description: z.string().min(2).max(100).nullish(),
-});
+export const AttributeFormSchema =  Attribute.pick({
+  id:true, name: true, value: true, valueMax: true
+}).default(
+  {
+    id: 0,
+    name: '',
+    value: 0,
+    valueMax: 0,
+  },
+)
+export type AttributeFormType = z.infer<typeof AttributeFormSchema>
 
 export const Skill = z.object({
   id: z.number().int(),
-  skill: GameSkill,
   skillId: z.string(),
   character: Character,
   characterId: z.number().int(),
@@ -110,6 +108,13 @@ export const FavoriteWithoutUser = Favorite.omit({
 });
 export type Favorite = z.infer<typeof Favorite>;
 export type FavoriteWithoutUser = z.infer<typeof FavoriteWithoutUser>;
+
+export const CharacterWithRelations = Character.extend({
+  notes: CharacterNote.array().nullish(),
+  attributes: Attribute.array().nullish(),
+  skills: Skill.array().nullish(),
+  favorite: Favorite.array().nullish(),
+})
 
 export const idSchema = z.coerce.number().int();
 

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '../ui/separator';
 import { fetchAllCharacters } from '@/actions/character-actions';
 import Link from 'next/link';
+import { CharacterCreateDialog } from './CharacterCreateDialog';
 
 export async function CharactersContainer({
   layout,
@@ -13,8 +14,8 @@ export async function CharactersContainer({
   layout: string;
   search: string;
 }) {
-  const characters = await fetchAllCharacters({ search });
-  const totalCharacters = characters.length;
+  const result = await fetchAllCharacters({ search });
+  const totalCharacters = result.length;
   const searchTerm = search ? `&search=${search}` : '';
   return (
     <>
@@ -47,16 +48,17 @@ export async function CharactersContainer({
         </div>
         <Separator className='mt-4' />
       </section>
-      {/* PRODUCTS */}
+      {/* CHARACTERS */}
       <div>
+        <CharacterCreateDialog />
         {totalCharacters === 0 ? (
           <h5 className='text-2xl mt-16'>
             Sorry, no characters matched your search...
           </h5>
         ) : layout === 'grid' ? (
-          <CharactersGrid characters={characters} />
+          <CharactersGrid characters={result} />
         ) : (
-          <CharactersList characters={characters} />
+          <CharactersList characters={result} />
         )}
       </div>
     </>

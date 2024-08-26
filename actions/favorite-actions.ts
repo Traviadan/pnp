@@ -61,7 +61,6 @@ export const fetchUserFavorites = async () => {
       include: {
         character: {
           include: {
-            metatype: true,
             attributes: true,
             skills: true,
             notes: true,

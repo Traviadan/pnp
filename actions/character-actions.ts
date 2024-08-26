@@ -8,7 +8,9 @@ import {
   Attribute,
   validateWithZodSchema
 } from '@/lib/schemas';
+import type { AttributeFormType, CharacterFormType } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
+import sr_metatypes from '@/lib/sr_metatypes.json';
 
 export const fetchAllCharacters = ({ search = '' }: { search: string }) => {
   return db.character.findMany({
@@ -56,11 +58,7 @@ export const fetchSingleCharacter = async ({ characterId }: {characterId: string
     },
     include: {
       notes: true,
-      attributes: {
-        include: {
-          gameAttribute: true,
-        }
-      },
+      attributes: { orderBy: { name: 'asc' }},
       skills: true,
       favorite: true,
     }
@@ -73,12 +71,13 @@ export const fetchSingleCharacter = async ({ characterId }: {characterId: string
 
 export const createCharacterAction = async (
   prevState: any,
-  formData: FormData
+  rawData: CharacterFormType
 ): Promise<{ message: string }> => {
   const user = await currentUser();
   if (user) {
+    var newId
+
     try {
-      const rawData = Object.fromEntries(formData);
       const valId = validateWithZodSchema(
         Character.pick({ metatypeId: true }),
         rawData
@@ -87,33 +86,43 @@ export const createCharacterAction = async (
         Character.pick({ name: true, finished: true}),
         rawData
       );
-  
-      await db.character.create({
+      const metatypeAttribute = sr_metatypes.metatypes.find((row) => {
+        row.id === valId.metatypeId
+      })?.attribute
+      if (!metatypeAttribute) return {message: 'Fehler beim anlegen!'}
+      newId = await db.character.create({
         data: {
           ...valFields,
           userId: user.id,
           metatypeId: valId.metatypeId,
+          attributes: {
+            createMany: {
+              data: metatypeAttribute.map((row) => {
+                  return {name: row.id, value: row.value, valueMax: row.maxValue}
+              })
+            }
+          }
         },
       });
     } catch (error) {
       return renderError(error);
     }
+    redirect(`/heroes/${newId}`);
   }
-  redirect('/heroes');
+  return { message: 'login needed!' };
 };
 
 export const updateCharacterAction = async (
   prevState: any,
-  formData: FormData
+  rawData: CharacterFormType
 ) => {
   try {
-    const rawData = Object.fromEntries(formData);
     const valId  = validateWithZodSchema(
       Character.pick({ id: true }),
       rawData
     );
     const valFields = validateWithZodSchema(
-      Character.pick({ name: true, finished: true }),
+      Character.pick({ name: true, finished: true, metatypeId: true }),
       rawData
     );
 
@@ -127,6 +136,35 @@ export const updateCharacterAction = async (
     });
     revalidatePath(`/heroes/${valId.id}`);
     return { message: 'character updated successfully' };
+  } catch (error) {
+    return renderError(error);
+  }
+};
+
+export const updateAttributeAction = async (
+  prevState: any,
+  rawData: AttributeFormType
+) => {
+  try {
+    const valId = validateWithZodSchema(
+      Attribute.pick({ id: true }),
+      rawData
+    );
+    const valFields = validateWithZodSchema(
+      Attribute.pick({ value:true, valueMax: true  }),
+      rawData
+    );
+
+    await db.attribute.update({
+      where: {
+        id: valId.id,
+      },
+      data: {
+        ...valFields
+      }
+    });
+    revalidatePath(`/heroes/${valId.id}`);
+    return { message: 'attribute updated successfully' };
   } catch (error) {
     return renderError(error);
   }
