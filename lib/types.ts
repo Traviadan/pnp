@@ -1,4 +1,15 @@
-import { Dispatch, SetStateAction } from "react";
+import { z } from "zod";
+
+export type BaseDataType = {
+  id?: number
+  name?: string
+  description?: string
+}
+
+export type BaseFormType = BaseDataType & z.ZodTypeAny
+
+
+
 
 export type actionFunction = (
   prevState: any,
@@ -37,4 +48,9 @@ export type CartState = {
   orderTotal: number;
 };
 
-export type CloseFunction = () => void;
+export type VoidFunction = () => void;
+
+export type FormActionFunction = (
+  prevState: any,
+  rawData: unknown
+) => Promise<{ message: string }>;

@@ -32,7 +32,7 @@ import {
 import { toast } from "@/components/ui/use-toast"
 import type { CharacterFormType } from "@/lib/schemas";
 import { CharacterFormSchema } from "@/lib/schemas";
-import sr_metatypes from '../../lib/sr_metatypes.json';
+import { metatypes } from "@/lib/data";
 import { formActionFunction, CloseFunction } from "@/lib/types";
 
 const initialState = {message: '',};
@@ -131,7 +131,7 @@ export function CharacterForm(
                       )}
                     >
                         {field.value
-                          ? sr_metatypes.metatypes.find(
+                          ? metatypes.find(
                               (row) => row.id === field.value
                             )?.name
                           : "Metatyp wählen"}
@@ -145,7 +145,7 @@ export function CharacterForm(
                     <CommandList>
                       <CommandEmpty>Keine Metatypen definiert!</CommandEmpty>
                       <CommandGroup>
-                        {sr_metatypes.metatypes.map((row: { id: string, name: string}) => (
+                        {metatypes.map((row: { id: string, name: string}) => (
                           <CommandItem
                             value={row.name}
                             key={row.id}

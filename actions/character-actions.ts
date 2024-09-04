@@ -8,9 +8,13 @@ import {
   Attribute,
   validateWithZodSchema
 } from '@/lib/schemas';
-import type { AttributeFormType, CharacterFormType } from '@/lib/schemas';
+import type {
+  CharacterFormType,
+  AttributeFormSchemaType
+} from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
-import sr_metatypes from '@/lib/sr_metatypes.json';
+//import sr_metatypes from '@/lib/sr_metatypes.json';
+import { metatypes } from '@/lib/data';
 
 export const fetchAllCharacters = ({ search = '' }: { search: string }) => {
   return db.character.findMany({
@@ -56,12 +60,6 @@ export const fetchSingleCharacter = async ({ characterId }: {characterId: string
     where: {
       id: parseInt(characterId),
     },
-    include: {
-      notes: true,
-      attributes: { orderBy: { name: 'asc' }},
-      skills: true,
-      favorite: true,
-    }
   });
   if (!character) {
     redirect('/heroes');
@@ -86,7 +84,7 @@ export const createCharacterAction = async (
         Character.pick({ name: true, finished: true}),
         rawData
       );
-      const metatypeAttribute = sr_metatypes.metatypes.find((row) => {
+      const metatypeAttribute = metatypes.find((row) => {
         row.id === valId.metatypeId
       })?.attribute
       if (!metatypeAttribute) return {message: 'Fehler beim anlegen!'}
@@ -143,7 +141,7 @@ export const updateCharacterAction = async (
 
 export const updateAttributeAction = async (
   prevState: any,
-  rawData: AttributeFormType
+  rawData: unknown
 ) => {
   try {
     const valId = validateWithZodSchema(
@@ -164,7 +162,7 @@ export const updateAttributeAction = async (
       }
     });
     revalidatePath(`/heroes/${valId.id}`);
-    return { message: 'attribute updated successfully' };
+    return { message: 'attribute successfully updated' };
   } catch (error) {
     return renderError(error);
   }

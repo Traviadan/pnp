@@ -15,11 +15,11 @@ import {
 } from "@/components/ui/tabs"
 import { CharacterForm } from '@/components/character/CharacterForm';
 import { AttributeAccordion } from '@/components/attributes/AttributeAccordion';
+import { CardContainer } from '@/components/global/CardContainer';
 
 async function EditCharacterPage({ params }: { params: { id: string } }) {
   const { id: characterId } = params;
   const character = await fetchSingleCharacter({characterId});
-  const { name, notes, attributes, skills, favorite } = character;
 
   return (
     <section>
@@ -34,34 +34,14 @@ async function EditCharacterPage({ params }: { params: { id: string } }) {
             <TabsTrigger value="skills">Skills</TabsTrigger>
           </TabsList>
           <TabsContent value="attributes">
-            <Card>
-              <CardHeader>
-                <CardTitle>Attributes</CardTitle>
-                <CardDescription>
-                  The attributes of your character.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                  <AttributeAccordion attributes={character.attributes}  />
-              </CardContent>
-              <CardFooter>
-              </CardFooter>
-            </Card>
+            <CardContainer title='Attributes' contentClass='space-y-2'>
+              <AttributeAccordion characterId={characterId} />
+            </CardContainer>
           </TabsContent>
           <TabsContent value="skills">
-            <Card>
-              <CardHeader>
-                <CardTitle>skills</CardTitle>
-                <CardDescription>
-                  Skills of your character
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-
-              </CardContent>
-              <CardFooter>
-              </CardFooter>
-            </Card>
+            <CardContainer title='Skills' contentClass='space-y-2'>
+              ToDo: Skills bearbeiten
+            </CardContainer>
           </TabsContent>
         </Tabs>
 

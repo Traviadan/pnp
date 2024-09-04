@@ -1,5 +1,14 @@
-import { Prisma } from '@prisma/client';
-import { z, ZodNull, ZodSchema } from 'zod';
+import { z, ZodSchema } from 'zod';
+import { BaseFormType } from './types';
+
+export const BaseSchema = z.object( { 
+  id: z.coerce.number().int().optional(),
+  name: z.string().optional(),
+  description: z.string().optional(),
+  value: z.coerce.number().int().optional(),
+  valueMax: z.coerce.number().int().optional(),
+})
+export type BaseSchemaType = z.infer<typeof BaseSchema>;
 
 export const Group = z.object( {
   id: z.number().int(),
@@ -57,26 +66,16 @@ export const CharacterFormSchema = Character.default(
 export type CharacterFormType = z.infer<typeof CharacterFormSchema>
 
 export const Attribute = z.object({
-  id: z.number().int(),
-  name: z.string().min(2).max(20),
+  id: z.coerce.number().int(),
+  name: z.string().max(20),
   character: Character,
   characterId: z.number().int(),
   value: z.coerce.number().int(),
   valueMax: z.coerce.number().int(),
 });
 export type Attribute = z.infer<typeof Attribute>
-
-export const AttributeFormSchema =  Attribute.pick({
-  id:true, name: true, value: true, valueMax: true
-}).default(
-  {
-    id: 0,
-    name: '',
-    value: 0,
-    valueMax: 0,
-  },
-)
-export type AttributeFormType = z.infer<typeof AttributeFormSchema>
+export const AttributeFormSchema = Attribute.partial()
+export type AttributeFormSchemaType = BaseFormType & z.infer<typeof AttributeFormSchema>
 
 export const Skill = z.object({
   id: z.number().int(),
@@ -128,4 +127,12 @@ export function validateWithZodSchema<T>(
     throw new Error(errors.join(','));
   }
   return result.data;
+}
+
+export function inferSchema<T extends z.ZodTypeAny>(schema: T) {
+  return schema;
+}
+
+export function parseData<T extends z.ZodTypeAny>(data: unknown, schema: T) {
+  return schema.parse(data) as z.infer<T>;
 }

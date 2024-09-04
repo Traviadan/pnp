@@ -1,6 +1,6 @@
 'use client';
 
-import FormContainer from '@/components/form/FormContainer';
+import FormContainer from '@/components/form/FormContainer_alt';
 import { toggleFavoriteAction } from '@/actions/favorite-actions';
 import { CardSubmitButton } from '@/components/form/Buttons';
 

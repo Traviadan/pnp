@@ -4,7 +4,6 @@ import db from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { getAdminUser, renderError } from '@/lib/helper';
 import { 
-  GameAttribute,
   validateWithZodSchema
 } from '@/lib/schemas';
 import { revalidatePath } from 'next/cache';
@@ -31,28 +30,9 @@ export const fetchGameAttributeDetails = async (attributeId: string) => {
   return attribute;
 };
 
-export const updateGameAttributeAction = async (
-  prevState: any,
-  formData: FormData
-) => {
-  await getAdminUser();
-  try {
-    const isDefault = formData.get('isdefault') ? true : false;
-    const rawData = Object.fromEntries(formData);
-    const validatedFields = validateWithZodSchema(GameAttribute, rawData);
-
-    await db.gameAttribute.update({
-      where: {
-        id: validatedFields.id,
-      },
-      data: {
-        ...validatedFields,
-        isDefault: isDefault
-      },
-    });
-    revalidatePath(`/admin/attributes`);
-    return { message: 'Attribute updated successfully' };
-  } catch (error) {
-    return renderError(error);
-  }
-};
+export const fetchAttributesOfCharacter = async (characterId: number) => {
+  return await db.attribute.findMany({
+    where: { characterId: characterId },
+    orderBy: { name: 'asc' },
+  })
+}

@@ -1,4 +1,5 @@
 import { OptionCard } from '@/lib/helper';
+import { CardContainer } from '@/components/global/CardContainer';
 
 export default async function HeroesPage() {
   return (

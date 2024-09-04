@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,19 +15,19 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { AttributeFormSchema } from "@/lib/schemas";
-import type { AttributeFormType } from "@/lib/schemas";
-import { formActionFunction, CloseFunction } from "@/lib/types";
+import type { AttributeFormSchemaType } from "@/lib/schemas";
+import { formActionFunction, VoidFunction } from "@/lib/types";
 
 const initialState = {message: '',};
 
 export function AttributeForm(
   { attribute,
     action,
-    closeDialog}: {attribute: AttributeFormType, action: formActionFunction, closeDialog?: CloseFunction}
+    closeDialog}: {attribute: AttributeFormSchemaType, action: formActionFunction, closeDialog?: VoidFunction}
   )
   {
     const initialData = AttributeFormSchema.parse(attribute)
-    const form = useForm<AttributeFormType>({ resolver: zodResolver(AttributeFormSchema), defaultValues: initialData })
+    const form = useForm<AttributeFormSchemaType>({ resolver: zodResolver(AttributeFormSchema), defaultValues: initialData })
     const { formState, reset, formState: {isSubmitted, isValid} } = form
     const [state, setState] = useState(initialState);
     const [formData, setData] = useState(initialData);
@@ -48,17 +47,7 @@ export function AttributeForm(
       }
     }, [action, state, formState, formData, reset]);
 
-    function onSubmit(data: AttributeFormType) {
-      /*
-      toast({
-        title: "Folgendes wurde übermittelt:",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      });
-      */
+    function onSubmit(data: AttributeFormSchemaType) {
       setData(data)
       if (closeDialog) closeDialog()
     }
