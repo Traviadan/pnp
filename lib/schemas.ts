@@ -53,7 +53,7 @@ export const Character = z.object({
   userId: z.coerce.number().int(),
 
 })
-export type Character = z.infer<typeof Character>;
+export type CharacterType = z.infer<typeof Character>;
 
 export const CharacterFormSchema = Character.default(
   { id: 0,

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 
 export type BaseDataType = {
   id?: number
@@ -8,7 +8,7 @@ export type BaseDataType = {
 
 export type BaseFormType = BaseDataType & z.ZodTypeAny
 
-
+export type CloseFunction = () => void
 
 
 export type actionFunction = (
