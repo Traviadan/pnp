@@ -3,28 +3,13 @@
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { useForm, FieldValues, DefaultValues } from "react-hook-form"
 import { useEffect, useState } from 'react';
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -35,6 +20,7 @@ import type { CharacterType, CharacterFormType } from "@/lib/schemas";
 import { Character, CharacterFormSchema } from "@/lib/schemas";
 import { metatypes } from "@/lib/data";
 import { formActionFunction, CloseFunction } from "@/lib/types";
+import { FormFieldTextInput, FormFieldNumberInput, FormFieldSelect } from "../form/FormFieldContainer"
 
 const initialState = {message: '',}
 
@@ -63,11 +49,12 @@ export function CharacterForm(
       character?: CharacterFormType
     })
   {
-  const initialData = schema.parse(character)
-  const form = useForm<z.infer<typeof schema>>({ resolver: zodResolver(schema),
-    defaultValues: initialData, mode: 'onSubmit', reValidateMode: 'onSubmit'
+  const initialData: DefaultValues<FieldValues> = schema.parse(character)
+
+  const form = useForm({ resolver: zodResolver(schema),
+    defaultValues: initialData, mode: 'onSubmit', reValidateMode: 'onBlur'
    })
-  const { formState, reset, formState: {isSubmitted, isValid} } = form
+  const { formState, reset, handleSubmit, formState: {isSubmitted, isValid} } = form
 
   const [state, setState] = useState(initialState);
   const [formData, setData] = useState(initialData);
@@ -86,7 +73,7 @@ export function CharacterForm(
     }
   }, [action, state, formState, formData, reset]);
 
-  function onSubmit(data: z.infer<typeof schema>) {
+  const onSubmit = (data: DefaultValues<FieldValues>) => {
     toast({
       title: "Folgendes wurde übermittelt:",
       description: (
@@ -99,17 +86,32 @@ export function CharacterForm(
     if (closeDialog) closeDialog()
   }
 
-  function onImageChange(file: File) {
-    toast({
-      title: "Image changed:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{file.name}</code>
-        </pre>
-      ),
-    })
-  }
 
+  return (
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <FormFieldTextInput
+      fieldName="id"
+      fieldData={initialData.id.toString()}
+      fieldHidden
+      />
+      <FormFieldTextInput
+      fieldName="name"
+      fieldData={initialData.name}
+      fieldLabel="Name"
+      />
+      <FormFieldSelect
+      fieldName="metatypeId"
+      fieldData={initialData.metatypeId}
+      selectData={metatypes}
+      fieldLabel="Metatype"
+      formDescription="Einen Metatyp auswählen"
+      />
+      <Button type="submit">Speichern</Button>
+      </form>
+    </Form>
+  )
+/*
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -229,4 +231,5 @@ export function CharacterForm(
       </form>
     </Form>
   )
+*/
 }

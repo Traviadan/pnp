@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm, SubmitHandler } from "react-hook-form"
+import { useForm, SubmitHandler, FieldValues, DefaultValues } from "react-hook-form"
 import { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
@@ -15,43 +15,36 @@ import {
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { FormActionFunction, VoidFunction } from "@/lib/types";
-import { BaseSchema, BaseSchemaType, parseData } from "@/lib/schemas";
+import { parseData } from "@/lib/schemas";
+import { ZodSchema, ZodTypeAny } from "zod";
 
 const initialState = {message: '',};
 
-interface FormProps {
-  data: unknown
-  action: FormActionFunction
+interface FormProps <T> {
+  schema: T
+  data: any
   closeDialog?: VoidFunction
 }
 
-export function FormController(params: FormProps) {
-  const {data, action, closeDialog} = params
-  const initialData = parseData(data, BaseSchema)
+export function FormController<T extends ZodTypeAny>(params: FormProps<T>) {
+  const {schema, data, closeDialog} = params
+  const initialData: DefaultValues<FieldValues> = parseData(data, schema)
   
-  const form = useForm<BaseSchemaType>({ resolver: zodResolver(BaseSchema),
+  const form = useForm({ resolver: zodResolver(schema),
     defaultValues: initialData,
-    mode: 'onSubmit', reValidateMode: 'onSubmit'
+    mode: 'onSubmit', reValidateMode: 'onBlur'
   })
   const {
     handleSubmit,
+    reset,
     control,
     formState,
-    reset,
-    setError,
     formState: {isSubmitted, isValid} } = form
 
   const [state, setState] = useState(initialState);
   const [formData, setData] = useState(initialData);
 
   useEffect(() => {
-    const updateAttribute = async () => {
-      setState(await action(state, formData))
-      reset(undefined, {keepValues: true})
-    }
-    if (formState.isSubmitted && formState.isValid) {
-      updateAttribute()
-    }
     if (state.message) {
       toast({ description: state.message })
       setState(initialState)
@@ -59,9 +52,9 @@ export function FormController(params: FormProps) {
         closeDialog()
       }
     }
-  }, [setError, state, formState, reset, action, formData, closeDialog])
+  }, [state, formState, reset, formData, closeDialog])
 
-  const onSubmit: SubmitHandler<BaseSchemaType> = (data) => {
+  const onSubmit = (data: DefaultValues<FieldValues>) => {
     setData(data)
   }
   
